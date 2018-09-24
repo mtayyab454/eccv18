@@ -28,7 +28,8 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
     batch_mae = 0.0
     loss_vec = []
     mae_vec = []
-    
+
+    t0 = datetime.now()
     for itr, batch in enumerate(loader, 0):
         patches, counts, d1, d2, d3, _, _ = batch
         patches, counts, d1, d2, d3 = patches.cuda(), counts.cuda(), d1.cuda(), d2.cuda(), d3.cuda()
@@ -66,9 +67,12 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
             batch_mae = 0.0
             log = log + '\n' + log_entery
             print(log_entery)
-    
+
+    t1 = datetime.now()
+
     swriter.add_scalars(outf+'-train', {'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, epoch_num)
     swriter.add_text(outf+'-train-log', log, epoch_num)
+    swriter.add_text(outf+'-train-time', str(t1-t0), epoch_num)
 
     model.eval()
     torch.save(model.state_dict(), outf + '/' + outf + '_%d.pth' % (epoch_num+1))
@@ -94,8 +98,8 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
     mat_outputs = []
     mat_files = []
     mat_patches = []
-    
-    
+
+    t0 = datetime.now()
     for itr, batch in enumerate(loader, 0):
 
         patches, counts, _, _, _, im_names, patch_names = batch        
@@ -132,7 +136,9 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
             batch_mae = 0.0
             log = log + '\n' + log_entery
             print(log_entery)
-            
+
+    t1 = datetime.now()
+
     u_files = set(mat_files)
     im_error = []
     for ii, f in enumerate(u_files):
@@ -150,5 +156,6 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
     
     swriter.add_scalars(outf+'-test', {'im_error':np.mean(im_error), 'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, epoch_num)
     swriter.add_text(outf+'-test-log', log, epoch_num)
+    swriter.add_text(outf+'-train-time', str(t1-t0), epoch_num)
     
     return info
