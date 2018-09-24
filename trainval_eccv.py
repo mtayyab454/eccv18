@@ -50,12 +50,12 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
         scheduler.optimizer.step()
 
         mae = (outputs - counts).abs().mean()
-        mae = mae.data[0]
+        mae = mae.item()
 
         batch_mae += mae
         mae_vec.append(mae)
-        batch_loss += loss.data[0]
-        loss_vec.append(loss.data[0])
+        batch_loss += loss.item()
+        loss_vec.append(loss.item())
 
         if itr % disp_after == disp_after-1:
             log_entery = ('[%d, %5d of %5d] Training bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' %
@@ -104,18 +104,18 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
 
         patches, counts, _, _, _, im_names, patch_names = batch        
         patches, counts = patches.cuda(), counts.cuda()
-        patches, counts = Variable(patches, volatile=True), Variable(counts)
+        patches, counts = Variable(patches), Variable(counts)
 
         outputs, _, _, _ = model(patches)
         loss = mse_criterion(outputs, counts)
 
         mae = (outputs - counts).abs().mean()
-        mae = mae.data[0]
+        mae = mae.item()
         
         batch_mae += mae
         mae_vec.append(mae)
-        batch_loss += loss.data[0]
-        loss_vec.append(loss.data[0])
+        batch_loss += loss.item()
+        loss_vec.append(loss.item())
         
         temp_counts = counts.data.cpu().numpy()
         mat_counts.extend(temp_counts[:,0].tolist())

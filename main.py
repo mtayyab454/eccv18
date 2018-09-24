@@ -11,7 +11,7 @@ import os
 import socket
 hname = socket.gethostname()
 if hname[0:4] == 'andy':
-    dataroot = '/home/mtayyab/visionnas_data/'
+    dataroot = '/home/andy/mtayyab/visionnas_data/'
 elif hname[0:6] == 'tayyab':
     dataroot = '/home/tayyab/visionnas_data/'
 else:
@@ -19,7 +19,7 @@ else:
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=True, help='UCF-QNRF-ECCV18 | ShanghaiTech')
-parser.add_argument('--trPatchs', required=True, help='name of the folder containing training patches')
+parser.add_argument('--trPatches', required=True, help='name of the folder containing training patches')
 parser.add_argument('--tsPatches', required=True, help='name of the folder containing testing patches')
 parser.add_argument('--outf', required=True, help='folder to output images and model checkpoints')
 parser.add_argument('--gpuId', type=int, required=True, help='The ID of the specified GPU')
@@ -29,13 +29,15 @@ parser.add_argument('--dsetFile', required=True, help='dataset class to import')
 parser.add_argument('--netFile', required=True, help='network file to import')
 
 parser.add_argument('--dataroot', default=dataroot, help='path to dataset')
-parser.add_argument('--trainBatchSize', type=int, default=32, help='input train batch size')
-parser.add_argument('--testBatchSize', type=int, default=32, help='input test batch size')
+parser.add_argument('--trainBatchSize', type=int, default=24, help='input train batch size')
+parser.add_argument('--testBatchSize', type=int, default=24, help='input test batch size')
 parser.add_argument('--displayAfter', type=int, default=50, help='print status after processing (n) batches')
-parser.add_argument('--sampleSize', type=int, default=30000, help='sample size for samplar class')
+parser.add_argument('--sampleSize', type=int, default=300000, help='sample size for samplar class')
 parser.add_argument('--numEpochs', type=int, default=100, help='input number of epoch')
 parser.add_argument('--netP', default='', help="path to net (to continue training)")
 parser.add_argument('--graphDir', default='', help="path to write tensorboard graph")
+
+# python main.py --dataset UCF-QNRF-ECCV18 --trPatches 224112r --tsPatches 224c --dsetFile mydatasets.CCMatDataECCV --trValFile trainval_eccv --netFile myDenseNet_eccv --outf eccv18 --gpuId 3
 
 opt = parser.parse_args()
 print(opt)
@@ -73,7 +75,7 @@ if os.path.exists(opt.outf) == False:
 
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), ])
 
-trainPatchPath = opt.dataroot + opt.dataset + '/Train/' + opt.trPatchs
+trainPatchPath = opt.dataroot + opt.dataset + '/Train/' + opt.trPatches
 trainData = dataset(root_dir=trainPatchPath, transform=transform)
 print(len(trainData))
 
