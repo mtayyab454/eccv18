@@ -91,6 +91,14 @@ print(len(testData))
 # patch, count, c1, c2, c3, c4, img_name, patch_name = train_data[15]
 
 ######################################################################################################################
+def saveCheckpoint(outf, model, scheduler, epoch_num):
+
+    cp = {'epoch': epoch_num,
+        'model': model.state_dict(),
+        'optimizer': scheduler.optimizer.state_dict(),
+        'scheduler': scheduler.state_dict(),}
+
+    torch.save(cp, outf + '/' + outf + '_' + str(epoch_num) + '.pth')
 
 def imshow(img, count):
     img = img / 2 + 0.5  # unnormalize
@@ -99,9 +107,10 @@ def imshow(img, count):
 
 ######################################################################################################################
 
-for epoch in range(opt.numEpochs):  # loop over the dataset multiple times
+for epoch in range(1, opt.numEpochs):  # loop over the dataset multiple times
 
     trainval.train(opt.outf, model, trainData, opt.sampleSize, opt.trainBatchSize, scheduler, swriter, opt.displayAfter, epoch)
+    saveCheckpoint(opt.outf, model, scheduler, epoch)
     trainval.test(opt.outf, model, testData, opt.testBatchSize, swriter, opt.displayAfter, epoch)
 
 print('Finished Training')
