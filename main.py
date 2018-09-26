@@ -73,8 +73,8 @@ parser.add_argument('--numEpochs', type=int, default=100, help='input number of 
 parser.add_argument('--netP', default='', help="path to net (to continue training)")
 parser.add_argument('--graphDir', default='', help="path to write tensorboard graph")
 
-opt = parser.parse_args(['--outf', 'eccv18_smallsample', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
-# opt = parser.parse_args()
+# opt = parser.parse_args(['--outf', 'eccv18_smallsample', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
+opt = parser.parse_args()
 
 opt.startEpoch = 1
 print(opt)
