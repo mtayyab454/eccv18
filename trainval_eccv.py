@@ -15,7 +15,7 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
     temp = np.random.permutation(range(len(data)))
     idx = temp[0: min(sample_size, len(data))]
     samplar = torch.utils.data.sampler.SubsetRandomSampler(idx)
-    loader = DataLoader(data, batch_size=batch_size, sampler=samplar, num_workers=4, drop_last=False)
+    loader = DataLoader(data, batch_size=batch_size, sampler=samplar, num_workers=8, drop_last=False)
 
     model.train()
     scheduler.step()
@@ -83,7 +83,7 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
 
 def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
 
-    loader = DataLoader(data, batch_size=batch_size, shuffle=False, num_workers=4, drop_last=False)
+    loader = DataLoader(data, batch_size=batch_size, shuffle=False, num_workers=8, drop_last=False)
 
     model.eval()
     print('\n')
