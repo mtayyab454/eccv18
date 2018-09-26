@@ -68,12 +68,14 @@ parser.add_argument('--dataroot', default=dataroot, help='path to dataset')
 parser.add_argument('--trBatchSize', type=int, default=24, help='input train batch size')
 parser.add_argument('--tsBatchSize', type=int, default=24, help='input test batch size')
 parser.add_argument('--displayAfter', type=int, default=50, help='print status after processing (n) batches')
-parser.add_argument('--sampleSize', type=int, default=500, help='sample size for samplar class')
+parser.add_argument('--sampleSize', type=int, default=300000, help='sample size for samplar class')
 parser.add_argument('--numEpochs', type=int, default=100, help='input number of epoch')
 parser.add_argument('--netP', default='', help="path to net (to continue training)")
 parser.add_argument('--graphDir', default='', help="path to write tensorboard graph")
 
 # opt = parser.parse_args(['--outf', 'eccv18_smallsample', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
+# opt = parser.parse_args(['--outf', 'eccv18_onech', '--netFile', 'myDenseNet_onech', '--dsetFile', 'mydatasets.CCMatDataOneCh'])
+# opt = parser.parse_args(['--outf', 'eccv18_test'])
 opt = parser.parse_args()
 
 opt.startEpoch = 1
@@ -117,6 +119,7 @@ testPatchPath = opt.dataroot + opt.dataset + '/Test/' + opt.tsPatches
 testData = dataset(root_dir=testPatchPath, transform=transform)
 print(len(testData))
 
+trainData[99]
 ######################################################################################################################
 
 # imshow(data[n, :, :, :], counts[n])
