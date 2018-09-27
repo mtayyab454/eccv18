@@ -87,7 +87,7 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
 
     model.eval()
     print('\n')
-    log = str();    
+    log = str()
     batch_loss = 0.0
     batch_mae = 0.0
     
