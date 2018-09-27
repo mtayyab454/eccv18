@@ -87,6 +87,7 @@ class CCMatDataOneCh(CC):
         if self.transform is not None:
             patch = self.transform(patch)
 
+        patch = patch.type(torch.FloatTensor)
         return patch, count, d1, d2, d3, img_name, patch_name
 
 class CCMatDataECCV(CC):
