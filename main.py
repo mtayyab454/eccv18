@@ -69,7 +69,7 @@ parser.add_argument('--trBatchSize', type=int, default=24, help='input train bat
 parser.add_argument('--tsBatchSize', type=int, default=24, help='input test batch size')
 parser.add_argument('--displayAfter', type=int, default=50, help='print status after processing (n) batches')
 parser.add_argument('--sampleSize', type=int, default=300000, help='sample size for samplar class')
-parser.add_argument('--numEpochs', type=int, default=100, help='input number of epoch')
+parser.add_argument('--numEpochs', type=int, default=50, help='input number of epoch')
 parser.add_argument('--netP', default='', help="path to net (to continue training)")
 parser.add_argument('--graphDir', default='', help="path to write tensorboard graph")
 
@@ -100,7 +100,7 @@ else:
     opt.graphDir = opt.graphDir + '/' + opt.outf
 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, gamma=0.5, last_epoch=-1)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 10, gamma=0.5, last_epoch=-1)
 
 swriter = SummaryWriter(log_dir=opt.graphDir)
 model.cuda()
