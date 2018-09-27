@@ -134,7 +134,7 @@ for epoch in range(opt.startEpoch, opt.numEpochs):  # loop over the dataset mult
 
     trainval.train(opt.outf, model, trainData, opt.sampleSize, opt.trBatchSize, scheduler, swriter, opt.displayAfter, epoch)
     saveCheckpoint(opt.outf, model, scheduler, opt, epoch)
-    # trainval.test(opt.outf, model, testData, opt.tsBatchSize, swriter, opt.displayAfter, epoch)
+    trainval.test(opt.outf, model, testData, opt.tsBatchSize, swriter, opt.displayAfter, epoch)
 
 print('Finished Training')
 del model
