@@ -65,8 +65,8 @@ parser.add_argument('--trPatches', default='224112r', help='name of the folder c
 parser.add_argument('--tsPatches', default='224c', help='name of the folder containing testing patches')
 
 parser.add_argument('--dataRoot', default=dataRoot, help='path to dataset')
-parser.add_argument('--trBatchSize', type=int, default=24, help='input train batch size')
-parser.add_argument('--tsBatchSize', type=int, default=24, help='input test batch size')
+parser.add_argument('--trBatchSize', type=int, default=32, help='input train batch size')
+parser.add_argument('--tsBatchSize', type=int, default=32, help='input test batch size')
 parser.add_argument('--displayAfter', type=int, default=50, help='print status after processing (n) batches')
 parser.add_argument('--sampleSize', type=int, default=300000, help='sample size for samplar class')
 parser.add_argument('--numEpochs', type=int, default=50, help='input number of epoch')
