@@ -76,8 +76,8 @@ parser.add_argument('--graphDir', default='', help="path to write tensorboard gr
 
 # opt = parser.parse_args(['--outf', 'eccv18_smallsample', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
 # opt = parser.parse_args(['--outf', 'eccv18_onech', '--netFile', 'myDenseNet_onech', '--dsetFile', 'mydatasets.CCMatDataOneCh'])
-opt = parser.parse_args(['--outf', 'eccv18_test', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
-# opt = parser.parse_args()
+# opt = parser.parse_args(['--outf', 'eccv18_test', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
+opt = parser.parse_args()
 
 opt.startEpoch = 1
 print(opt)
