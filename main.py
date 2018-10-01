@@ -44,12 +44,12 @@ def imshow(img, count):
 ######################################################################################################################
 
 hname = socket.gethostname()
-if hname[0:4] == 'andy':
-    dataroot = '/home/andy/mtayyab/data/'
-elif hname[0:6] == 'tayyab':
-    dataroot = '/home/tayyab/crcv_data/'
+if hname[0:6] == 'tayyab':
+    dataRoot = '/home/tayyab/crcv_home/data/'
+    outRoot = '/home/tayyab/crcv_home/outputs/'
 else:
-    dataroot = '/home/mtayyab/data/'
+    dataRoot = '/home/mtayyab/data/'
+    outRoot = '/home/mtayyab/code/outputs/'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--outf', required=True, help='folder to output images and model checkpoints')
@@ -60,23 +60,24 @@ parser.add_argument('--trValFile', default='trainval_eccv', help='train val file
 parser.add_argument('--dsetFile', default='mydatasets.CCMatDataECCV', help='dataset class to import')
 parser.add_argument('--netFile', default='myDenseNet_eccv', help='network file to import')
 
-parser.add_argument('--dataset', default='UCF-QNRF-ECCV18', help='UCF-QNRF-ECCV18 | ShanghaiTech')
+parser.add_argument('--dataSet', default='UCF-QNRF-ECCV18', help='UCF-QNRF-ECCV18 | ShanghaiTech')
 parser.add_argument('--trPatches', default='224112r', help='name of the folder containing training patches')
 parser.add_argument('--tsPatches', default='224c', help='name of the folder containing testing patches')
 
-parser.add_argument('--dataroot', default=dataroot, help='path to dataset')
+parser.add_argument('--dataRoot', default=dataRoot, help='path to dataset')
 parser.add_argument('--trBatchSize', type=int, default=24, help='input train batch size')
 parser.add_argument('--tsBatchSize', type=int, default=24, help='input test batch size')
 parser.add_argument('--displayAfter', type=int, default=50, help='print status after processing (n) batches')
 parser.add_argument('--sampleSize', type=int, default=300000, help='sample size for samplar class')
 parser.add_argument('--numEpochs', type=int, default=50, help='input number of epoch')
 parser.add_argument('--netP', default='', help="path to net (to continue training)")
+parser.add_argument('--outRoot', default=outRoot, help="path to write tensorboard graph")
 parser.add_argument('--graphDir', default='', help="path to write tensorboard graph")
 
 # opt = parser.parse_args(['--outf', 'eccv18_smallsample', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
 # opt = parser.parse_args(['--outf', 'eccv18_onech', '--netFile', 'myDenseNet_onech', '--dsetFile', 'mydatasets.CCMatDataOneCh'])
-# opt = parser.parse_args(['--outf', 'eccv18_test', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
-opt = parser.parse_args()
+opt = parser.parse_args(['--outf', 'eccv18_test', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
+# opt = parser.parse_args()
 
 opt.startEpoch = 1
 print(opt)
@@ -94,13 +95,15 @@ model = myNet.DenseNet()
 
 os.environ['CUDA_VISIBLE_DEVICES'] = str(opt.gpuId)
 
+opt.outf = opt.outRoot + '/' + opt.outf
+
 if opt.graphDir == '':
     opt.graphDir = opt.outf + '/tensorboard'
 else:
     opt.graphDir = opt.graphDir + '/' + opt.outf
 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 10, gamma=0.5, last_epoch=-1)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, gamma=0.5, last_epoch=-1)
 
 swriter = SummaryWriter(log_dir=opt.graphDir)
 model.cuda()
@@ -119,7 +122,6 @@ testPatchPath = opt.dataroot + opt.dataset + '/Test/' + opt.tsPatches
 testData = dataset(root_dir=testPatchPath, transform=transform)
 print(len(testData))
 
-trainData[99]
 ######################################################################################################################
 
 # imshow(data[n, :, :, :], counts[n])

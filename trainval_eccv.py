@@ -22,7 +22,7 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
 
     print('\n')
     print('Learning rate: ', scheduler.get_lr())
-    log = '\n' + 'Learning rate: ' + str(scheduler.get_lr())
+    # log = '\n' + 'Learning rate: ' + str(scheduler.get_lr())
 
     batch_loss = 0.0
     batch_mae = 0.0
@@ -66,14 +66,12 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
 
             batch_loss = 0.0
             batch_mae = 0.0
-            log = log + '\n' + log_entery
+            # log = log + '\n' + log_entery
             print(log_entery)
 
     t1 = datetime.now()
 
-    swriter.add_scalars(outf+'-train', {'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, epoch_num)
-    swriter.add_text(outf+'-train-log', log, epoch_num)
-    swriter.add_text(outf+'-train-time', str(t1-t0), epoch_num)
+    swriter.add_scalars(outf+'-train', {'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, 'time_taken', (t1-t0).seconds/60, epoch_num)
 
     model.eval()
 
@@ -87,7 +85,7 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
 
     model.eval()
     print('\n')
-    log = str()
+    # log = str()
     batch_loss = 0.0
     batch_mae = 0.0
     
@@ -133,7 +131,7 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
                 'bMAE': batch_mae / disp_after, 'MAE': np.mean(mae_vec)}, ((epoch_num-1) * loader.__len__()) + itr)
             batch_loss = 0.0
             batch_mae = 0.0
-            log = log + '\n' + log_entery
+            # log = log + '\n' + log_entery
             print(log_entery)
 
     t1 = datetime.now()
@@ -152,13 +150,11 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
 
         log_entery = 'Test MAE (over images): %.3f' % (np.mean(im_error))
         print(log_entery)
-        log = log + '\n' + log_entery
+        # log = log + '\n' + log_entery
 
     info = {'im_error':im_error, 'im_files':list(u_files), 'mae_vec':mae_vec, 'loss_vec':loss_vec, 
-            'mat_counts':mat_counts, 'mat_outputs':mat_outputs, 'mat_files':mat_files, 'mat_patches':mat_patches, 'log':log}
+            'mat_counts':mat_counts, 'mat_outputs':mat_outputs, 'mat_files':mat_files, 'mat_patches':mat_patches}
     
-    swriter.add_scalars(outf+'-test', {'im_error':np.mean(im_error), 'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, epoch_num)
-    swriter.add_text(outf+'-test-log', log, epoch_num)
-    swriter.add_text(outf+'-test-time', str(t1-t0), epoch_num)
+    swriter.add_scalars(outf+'-test', {'im_error':np.mean(im_error), 'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, 'time_taken', (t1-t0).seconds/60, epoch_num)
     
     return info
