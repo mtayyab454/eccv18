@@ -4,6 +4,7 @@ from datetime import datetime
 import torch.nn as nn
 import numpy as np
 import torch
+import os
 
 ###############################################################################
 
@@ -58,11 +59,8 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
         loss_vec.append(loss.item())
 
         if itr % disp_after == disp_after-1:
-            log_entery = ('[%d, %5d of %5d] Training bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' % (epoch_num,
-                itr+1, len(loader), batch_loss/disp_after, np.mean(loss_vec), batch_mae/disp_after, np.mean(mae_vec) ))
-
-            swriter.add_scalars(outf+'-train-bw', {'bMSE':batch_loss/disp_after, 'MSE':np.mean(loss_vec),
-                'bMAE':batch_mae/disp_after, 'MAE':np.mean(mae_vec)}, ((epoch_num-1)*loader.__len__()) + itr)
+            log_entery = ('[%d, %5d of %5d] Training bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' % (epoch_num, itr+1, len(loader), batch_loss/disp_after, np.mean(loss_vec), batch_mae/disp_after, np.mean(mae_vec) ))
+            swriter.add_scalars(os.path.basename(outf)+'-train-bw', {'bMSE':batch_loss/disp_after, 'MSE':np.mean(loss_vec), 'bMAE':batch_mae/disp_after, 'MAE':np.mean(mae_vec)}, ((epoch_num-1)*loader.__len__()) + itr)
 
             batch_loss = 0.0
             batch_mae = 0.0
@@ -71,7 +69,7 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
 
     t1 = datetime.now()
 
-    swriter.add_scalars(outf+'-train', {'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, 'time_taken', (t1-t0).seconds/60, epoch_num)
+    swriter.add_scalars(os.path.basename(outf)+'-train', {'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec), 'time_taken':(t1-t0).seconds/60}, epoch_num)
 
     model.eval()
 
@@ -124,11 +122,9 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
         mat_patches.extend(patch_names)
         
         if itr % disp_after == disp_after-1:
-            log_entery = ('[%d, %5d of %5d] Testing bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' % (epoch_num,
-                itr+1, len(loader), batch_loss/disp_after, np.mean(loss_vec), batch_mae/disp_after, np.mean(mae_vec) ))
+            log_entery = ('[%d, %5d of %5d] Testing bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' % (epoch_num, itr+1, len(loader), batch_loss/disp_after, np.mean(loss_vec), batch_mae/disp_after, np.mean(mae_vec) ))
 
-            swriter.add_scalars(outf + '-test-bw', {'bMSE': batch_loss / disp_after, 'MSE': np.mean(loss_vec),
-                'bMAE': batch_mae / disp_after, 'MAE': np.mean(mae_vec)}, ((epoch_num-1) * loader.__len__()) + itr)
+            swriter.add_scalars(os.path.basename(outf) + '-test-bw', {'bMSE': batch_loss / disp_after, 'MSE': np.mean(loss_vec), 'bMAE':batch_mae / disp_after, 'MAE': np.mean(mae_vec)}, ((epoch_num-1) * loader.__len__()) + itr)
             batch_loss = 0.0
             batch_mae = 0.0
             # log = log + '\n' + log_entery
@@ -155,6 +151,6 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
     info = {'im_error':im_error, 'im_files':list(u_files), 'mae_vec':mae_vec, 'loss_vec':loss_vec, 
             'mat_counts':mat_counts, 'mat_outputs':mat_outputs, 'mat_files':mat_files, 'mat_patches':mat_patches}
     
-    swriter.add_scalars(outf+'-test', {'im_error':np.mean(im_error), 'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec)}, 'time_taken', (t1-t0).seconds/60, epoch_num)
+    swriter.add_scalars(os.path.basename(outf)+'-test', {'im_error':np.mean(im_error), 'loss':np.mean(loss_vec), 'mae':np.mean(mae_vec), 'time_taken':(t1-t0).seconds/60}, epoch_num)
     
     return info

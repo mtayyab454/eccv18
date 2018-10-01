@@ -1,21 +1,21 @@
-import os
-import torch
+import torchvision.transforms as transforms
+from torch.utils.data import Dataset
 import scipy.io as sio
 from skimage import io
-from torch.utils.data import Dataset
 import numpy as np
-# import h5py
-import scipy.misc
-from skimage.transform import resize
-import torchvision.transforms as transforms
+import torch
+import os
 
-def load_mat(filepath):
-    f = h5py.File(filepath)
-    mat = {}
-    for k in f.keys():
-        mat[k] = np.array(f[k])
-        
-    return mat
+def get_count(patch_path, gt_available):
+    count = 0.0
+    img_name = 'nill!'
+    if gt_available:
+        count = float(patch_path.split('_')[-1].split('.')[0])
+        temp = patch_path[::-1].split('/')[0]
+        id = [i for i, n in enumerate(temp) if n == '_'][1]
+        temp = temp[id + 1:]
+        img_name = temp[::-1]
+    return count, img_name
 
 class CC(Dataset):
 
@@ -53,24 +53,14 @@ class CCMatDataOneCh(CC):
     def __getitem__(self, idx):
 
         patch_path = os.path.join(self.root_dir, self.files[idx])
+        patch_name = self.files[idx]
         patch = io.imread(patch_path)
 
-        count = 0.0
-        img_name = 'nill!'
-        if self.gt_available == True:
-            count = float(patch_path.split('_')[-1].split('.')[0])
-            temp = patch_path[::-1].split('/')[0]
-            id = [i for i, n in enumerate(temp) if n == '_'][1]
-            temp = temp[id + 1:]
-            img_name = temp[::-1]
-
-        patch_name = self.files[idx]
-
+        count, img_name = get_count(patch_path, self.gt_available)
         count = torch.FloatTensor([count])
 
         try:
             mat_data = sio.loadmat(patch_path[:-4:] + '.mat')
-        #            mat_data = load_mat(patch_path[:-4:] + '.mat')
         except:
             print('Problem loading >>> ' + patch_path, idx)
 
@@ -101,33 +91,24 @@ class CCMatDataECCV(CC):
     def __getitem__(self, idx):
 
         patch_path = os.path.join(self.root_dir, self.files[idx])
+        patch_name = self.files[idx]
         patch = io.imread(patch_path)
 
-        count = 0.0
-        img_name = 'nill!'
-        if self.gt_available == True:
-            count = float(patch_path.split('_')[-1].split('.')[0])
-            temp = patch_path[::-1].split('/')[0]
-            id = [i for i, n in enumerate(temp) if n == '_'][1]
-            temp = temp[id+1:]
-            img_name = temp[::-1]        
-            
-        patch_name = self.files[idx]
-
+        count, img_name = get_count(patch_path, self.gt_available)
         count = torch.FloatTensor([count])
-        if self.transform is not None:
-            patch = self.transform(patch)
 
         try:
             mat_data = sio.loadmat(patch_path[:-4:] + '.mat')
-#            mat_data = load_mat(patch_path[:-4:] + '.mat')
         except:
             print('Problem loading >>> ' + patch_path, idx)
-        
+
         den = mat_data['d28']
-        d1 = torch.FloatTensor(den[:,:,0])
-        d2 = torch.FloatTensor(den[:,:,1])
-        d3 = torch.FloatTensor(den[:,:,2])
+        d1 = torch.FloatTensor(den[:, :, 0])
+        d2 = torch.FloatTensor(den[:, :, 1])
+        d3 = torch.FloatTensor(den[:, :, 2])
+
+        if self.transform is not None:
+            patch = self.transform(patch)
         
         return patch, count, d1, d2, d3, img_name, patch_name  
     
@@ -142,25 +123,13 @@ class CCMatDataD201(CC):
     def __getitem__(self, idx):
 
         patch_path = os.path.join(self.root_dir, self.files[idx])
+        patch_name = self.files[idx]
         patch = io.imread(patch_path)
 
-        count = 0.0
-        img_name = 'nill!'
-        if self.gt_available == True:
-            count = float(patch_path.split('_')[-1].split('.')[0])
-            temp = patch_path[::-1].split('/')[0]
-            id = [i for i, n in enumerate(temp) if n == '_'][1]
-            temp = temp[id+1:]
-            img_name = temp[::-1]        
-            
-        patch_name = self.files[idx]
-
+        count, img_name = get_count(patch_path, self.gt_available)
         count = torch.FloatTensor([count])
 
-        try:            
-            if self.transform is not None:
-                patch = self.transform(patch)
-        except:
-            print(patch_path)
+        if self.transform is not None:
+            patch = self.transform(patch)
         
-        return patch, count, img_name, patch_name  
+        return patch, count, img_name, patch_name

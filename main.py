@@ -34,7 +34,7 @@ def saveCheckpoint(outf, model, scheduler, opt, epoch_num):
         'scheduler': scheduler.state_dict(),
         'options': opt,}
 
-    torch.save(cp, outf + '/' + outf + '_' + str(epoch_num) + '.pth')
+    torch.save(cp, outf + '/' + os.path.basename(outf) + '_' + str(epoch_num) + '.pth')
 
 def imshow(img, count):
     img = img / 2 + 0.5  # unnormalize
@@ -57,10 +57,10 @@ parser.add_argument('--outf', required=True, help='folder to output images and m
 parser.add_argument('--gpuId', type=int, default=0, help='The ID of the specified GPU')
 
 parser.add_argument('--trValFile', default='trainval_eccv', help='train val file to import')
-parser.add_argument('--dsetFile', default='mydatasets.CCMatDataECCV', help='dataset class to import')
+parser.add_argument('--dsetFile', default='mydatasets_eccv.CCMatDataECCV', help='dataset class to import')
 parser.add_argument('--netFile', default='myDenseNet_eccv', help='network file to import')
 
-parser.add_argument('--dataSet', default='UCF-QNRF-ECCV18', help='UCF-QNRF-ECCV18 | ShanghaiTech')
+parser.add_argument('--dataset', default='UCF-QNRF-ECCV18', help='UCF-QNRF-ECCV18 | ShanghaiTech')
 parser.add_argument('--trPatches', default='224112r', help='name of the folder containing training patches')
 parser.add_argument('--tsPatches', default='224c', help='name of the folder containing testing patches')
 
@@ -76,8 +76,8 @@ parser.add_argument('--graphDir', default='', help="path to write tensorboard gr
 
 # opt = parser.parse_args(['--outf', 'eccv18_smallsample', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
 # opt = parser.parse_args(['--outf', 'eccv18_onech', '--netFile', 'myDenseNet_onech', '--dsetFile', 'mydatasets.CCMatDataOneCh'])
-# opt = parser.parse_args(['--outf', 'eccv18_test', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1'])
-opt = parser.parse_args()
+opt = parser.parse_args(['--outf', 'CCMatDataECCV', '--sampleSize', '10', '--trBatchSize', '2', '--displayAfter', '1', '--dsetFile', 'mydatasets_eccv.CCMatDataECCV'])
+# opt = parser.parse_args()
 
 opt.startEpoch = 1
 print(opt)
@@ -95,7 +95,7 @@ model = myNet.DenseNet()
 
 os.environ['CUDA_VISIBLE_DEVICES'] = str(opt.gpuId)
 
-opt.outf = opt.outRoot + '/' + opt.outf
+opt.outf = opt.outRoot + opt.outf
 
 if opt.graphDir == '':
     opt.graphDir = opt.outf + '/tensorboard'
@@ -114,11 +114,11 @@ if os.path.exists(opt.outf) == False:
 
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), ])
 
-trainPatchPath = opt.dataroot + opt.dataset + '/Train/' + opt.trPatches
+trainPatchPath = opt.dataRoot + opt.dataset + '/Train/' + opt.trPatches
 trainData = dataset(root_dir=trainPatchPath, transform=transform)
 print(len(trainData))
 
-testPatchPath = opt.dataroot + opt.dataset + '/Test/' + opt.tsPatches
+testPatchPath = opt.dataRoot + opt.dataset + '/Test/' + opt.tsPatches
 testData = dataset(root_dir=testPatchPath, transform=transform)
 print(len(testData))
 
