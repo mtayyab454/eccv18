@@ -57,6 +57,7 @@ def train(outf, model, data, sample_size, batch_size, scheduler, swriter, disp_a
         mae_vec.append(mae)
         batch_loss += loss.item()
         loss_vec.append(loss.item())
+        del loss, outputs
 
         if itr % disp_after == disp_after-1:
             log_entery = ('[%d, %5d of %5d] Training bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' % (epoch_num, itr+1, len(loader), batch_loss/disp_after, np.mean(loss_vec), batch_mae/disp_after, np.mean(mae_vec) ))
@@ -120,7 +121,8 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
         mat_outputs.extend(temp_outputs[:,0].tolist())
         mat_files.extend(im_names)
         mat_patches.extend(patch_names)
-        
+        del loss, outputs
+
         if itr % disp_after == disp_after-1:
             log_entery = ('[%d, %5d of %5d] Testing bMSE: %5.3f MSE: %5.3f bMAE: %4.2f MAE: %4.2f ' % (epoch_num, itr+1, len(loader), batch_loss/disp_after, np.mean(loss_vec), batch_mae/disp_after, np.mean(mae_vec) ))
 
