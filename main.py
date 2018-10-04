@@ -49,7 +49,7 @@ if hname[0:6] == 'tayyab':
     outRoot = '/home/tayyab/crcv_home/outputs/'
 else:
     dataRoot = '/home/mtayyab/data/'
-    outRoot = '/home/mtayyab/codes/outputs/'
+    outRoot = '/home/mtayyab/outputs/'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--outf', required=True, help='folder to output images and model checkpoints')
