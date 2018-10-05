@@ -146,9 +146,9 @@ def test(outf, model, data, batch_size, swriter, disp_after, epoch_num):
             e_counts += mat_outputs[kk]
         im_error.append(abs(g_counts-e_counts))
 
-        log_entery = 'Test MAE (over images): %.3f' % (np.mean(im_error))
-        print(log_entery)
-        # log = log + '\n' + log_entery
+    log_entery = 'Test MAE (over images): %.3f' % (np.mean(im_error))
+    print(log_entery)
+    # log = log + '\n' + log_entery
 
     info = {'im_error':im_error, 'im_files':list(u_files), 'mae_vec':mae_vec, 'loss_vec':loss_vec, 
             'mat_counts':mat_counts, 'mat_outputs':mat_outputs, 'mat_files':mat_files, 'mat_patches':mat_patches}

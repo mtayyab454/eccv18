@@ -103,7 +103,7 @@ else:
     opt.graphDir = opt.graphDir + '/' + opt.outf
 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 5, gamma=0.5, last_epoch=-1)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 10, gamma=0.5, last_epoch=-1)
 
 swriter = SummaryWriter(log_dir=opt.graphDir)
 model.cuda()
